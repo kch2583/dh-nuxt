@@ -1,0 +1,30 @@
+[
+  {
+    "typeNumber": 1,
+    "type": "텍션지",
+    "thickness": "0.55mm",
+    "height": "1500cm",
+    "length": "100m"
+  },
+  {
+    "typeNumber": 2,
+    "type": "합성피혁",
+    "thickness": "1.4mm",
+    "height": "1380cm",
+    "length": "30m"
+  },
+  {
+    "typeNumber": 3,
+    "type": "스킨스웨드",
+    "thickness": "1.1mm",
+    "height": "1380cm",
+    "length": "30m"
+  },
+  {
+    "typeNumber": 4,
+    "type": "합성피혁2",
+    "thickness": "0.7mm",
+    "height": "1380cm",
+    "length": "30m"
+  }
+]
