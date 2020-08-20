@@ -24,6 +24,7 @@
               exact
             >{{ tabList.name }}</v-tab>
           </v-tabs>
+          <loginStatus></loginStatus>
         </div>
       </v-col>
     </v-row>
@@ -31,7 +32,11 @@
 </template>
 
 <script>
+import loginStatus from "../../components/admin/loginStatus";
 export default {
+  components: {
+    loginStatus
+  },
   data() {
     return {
       homeTabLists: [

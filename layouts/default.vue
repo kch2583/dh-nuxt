@@ -3,6 +3,7 @@
     <v-container>
       <logo minWidth="100px" maxWidth="17vw"></logo>
       <tabs></tabs>
+
       <nuxt class="pb-12" />
       <v-footer class="mt-7" padless absolute>
         <div>sdkjefoi slkjfeoijef</div>

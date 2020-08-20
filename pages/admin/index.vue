@@ -14,6 +14,7 @@
 import productsTable from "../../components/admin/productsTable";
 import usersTable from "../../components/admin/usersTable";
 export default {
+  middleware: "auth",
   components: {
     productsTable,
     usersTable

@@ -1,4 +1,6 @@
 import colors from "vuetify/es5/util/colors";
+import bodyParser from "body-parser";
+import session from "express-session";
 
 export default {
   /*
@@ -54,10 +56,11 @@ export default {
    ** Nuxt.js dev-modules
    */
   buildModules: ["@nuxtjs/vuetify"],
+
   /*
    ** Nuxt.js modules
    */
-  modules: [],
+  modules: ["@nuxtjs/axios"],
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -83,5 +86,19 @@ export default {
    ** Build configuration
    ** See https://nuxtjs.org/api/configuration-build/
    */
-  build: {}
+  build: {},
+  serverMiddleware: [
+    // body-parser middleware
+    bodyParser.json(),
+    // session middleware
+    session({
+      secret: "super-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: { maxAge: 60000 }
+    }),
+    // Api middleware
+    // We add /api/login & /api/logout routes
+    "~/api"
+  ]
 };
