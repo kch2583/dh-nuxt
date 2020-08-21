@@ -15,8 +15,11 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "mongodb": "^3.6.0",
+    "mongoose": "^5.10.0",
+    "mysql": "^2.18.1",
     "nuxt": "^2.14.0",
-    "vee-validate": "^2.2.15"
+    "vee-validate": "^2.2.15",
+    "vue-resource": "^1.5.1"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2"

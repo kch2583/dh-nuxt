@@ -9,6 +9,7 @@
 <script>
 import usersTable from "../../components/admin/usersTable";
 export default {
+  middleware: "auth",
   components: { usersTable }
 };
 </script>
