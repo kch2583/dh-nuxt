@@ -7,5 +7,5 @@ var productSchema = new mongoose.Schema({
   image: String
 });
 
-mongoose.model("product", productSchema);
-module.exports = mongoose.model("product");
+mongoose.model("Products", productSchema);
+module.exports = mongoose.model("Products");

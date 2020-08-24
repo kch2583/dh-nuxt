@@ -46,7 +46,7 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~/plugins/vue-resource"],
+  plugins: ["~/plugins/vue-resource", "~/plugins/fontawesome"],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components
@@ -97,6 +97,7 @@ export default {
       saveUninitialized: false,
       cookie: { maxAge: 60000 }
     }),
+
     // Api middleware
     // We add /api/login & /api/logout routes
     "~/api"

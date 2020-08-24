@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
-// import Product from "../models/product.js";
-const Product = require("../models/product.js");
+import Product from "../models/Product";
+
+// const Product = require("../models/Product.js");
 const catchErrors = require("../middleware/async-error.js");
 
 // Create express router
@@ -19,74 +20,83 @@ router.use((req, res, next) => {
 });
 
 //mongodb 연결
-
-const MongoClient = require("mongodb").MongoClient;
+mongoose.Promise = global.Promise;
 const uri =
-  "mongodb+srv://chanhee:kimchan8855@cluster0-1ay2j.mongodb.net/dh?retryWrites=true&w=majority";
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-client.connect(err => {
-  // const collection = client.db("products").collection("product");
-  console.log("mongodb");
+  "mongodb+srv://chanhee:kimchan8855@cluster0-1ay2j.mongodb.net/products?retryWrites=true&w=majority";
+mongoose.connect(
+  uri,
+  { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true },
+  function(err, client) {
+    if (err) {
+      console.log("Error occurred while connecting to MongoDB Atlas...\n", err);
+    } else {
+      console.log("Connected...");
+    }
+  }
+);
 
-  // perform actions on the collection object
-  client.close();
-});
-
-// mongoose.Promise = global.Promise;
-// const uri =
-//   "mongodb+srv://chanhee:kimchan8855@cluster0-1ay2j.mongodb.net/products?retryWrites=true&w=majority";
-// mongoose.connect(
-//   uri,
-//   { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true },
-//   function(err, client) {
-//     if (err) {
-//       console.log("Error occurred while connecting to MongoDB Atlas...\n", err);
-//     } else {
-//       console.log("Connected...");
-//     }
-//   }
-// );
+// GET Product - /api/product
+router.get(
+  "/product",
+  catchErrors(async (req, res, next) => {
+    const products = await Product.find({}, function(err, products) {
+      if (err) return res.status(500).send({ error: "database failure" });
+    });
+    res.send(products);
+  })
+);
 
 // POST Create Product - /api/product
-router.post("/product", (req, res) => {
-  console.log("api/product start");
+// router.post("/product", (req, res) => {
+//   var New_product = new Product({
+//     number: req.body.number,
+//     image: req.body.image,
+//     type: req.body.type,
+//     pattern: req.body.pattern,
+//     color: ""
+//   });
 
-  var New_product = new Product({
-    number: req.body.number,
-    image: req.body.image,
-    type: req.body.type,
-    pattern: req.body.pattern,
-    color: ""
-  });
-  console.log("...");
+//   New_product.save(function(err) {
+//     if (err) console.log(err);
+//   });
+// });
 
-  New_product.save(function(err) {
-    if (err) console.log(err);
-  });
-  console.log(Product.product);
-});
+router.post(
+  "/product",
+  catchErrors(async req => {
+    var New_product = new Product({
+      number: req.body.number,
+      image: req.body.image,
+      type: req.body.type,
+      pattern: req.body.pattern,
+      color: ""
+    });
 
-// router.post(
-//   "/product",
-//   catchErrors(async (req, res, next) => {
-//     console.log("api/product start");
+    await New_product.save(function(err) {
+      if (err) console.log(err);
+    });
+    return res.json({ ok: true });
+  })
+);
 
-//     var New_product = new Product({
-//       number: req.body.number,
-//       image: req.body.image,
-//       type: req.body.type,
-//       pattern: req.body.pattern,
-//       color: ""
-//     });
-//     console.log("...");
+router.put(
+  "/product/:id",
+  catchErrors(async (req, res) => {
+    const Edit_product = await Product.findById(req.params.id);
+    var product = req.body.product;
 
-//     await New_product.save();
-//     console.log(Product);
-//   })
-// );
+    Edit_product.number = product.number;
+    Edit_product.type = product.type;
+    Edit_product.color = product.color;
+    Edit_product.pattern = product.pattern;
+    Edit_product.image = product.image;
+
+    await Edit_product.save(function(err) {
+      if (err) console.log(err);
+    });
+    return res.json({ ok: true });
+  })
+);
 
 // Add POST - /api/login
 router.post("/login", (req, res) => {

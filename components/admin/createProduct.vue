@@ -15,10 +15,10 @@
         <v-row>
           <v-col>
             <v-card-text>
-              <v-form @submit.prevent="createProduct">
+              <v-form @submit.prevent="createProduct" v-if="currentProduct">
                 <!-- Number -->
                 <v-text-field
-                  v-model="productNumber"
+                  v-model="currentProduct.number"
                   placeholder="숫자만 입력하세요"
                   :counter="10"
                   label="Product Number"
@@ -36,12 +36,12 @@
                 <v-select
                   :items="types"
                   label="Type"
-                  v-model="productType"
+                  v-model="currentProduct.type"
                 ></v-select>
 
                 <!-- Image file name -->
                 <v-text-field
-                  v-model="ImageFileName"
+                  v-model="currentProduct.imageFileName"
                   :rules="fileNameRules"
                   placeholder="이미지 파일 이름을 입력하세요"
                   label="Image File Name"
@@ -54,12 +54,17 @@
                   chips
                   multiple
                   label="Pattern"
-                  v-model="productPattern"
+                  v-model="currentProduct.pattern"
                 >
                   <v-icon slot="append" color="green">mdi-plus</v-icon>
                 </v-select>
-                <v-btn block color="green darken-1" text type="submit"
-                  >생성하기</v-btn
+                <v-btn
+                  block
+                  color="green darken-1"
+                  text
+                  type="submit"
+                  @click.stop="createDialog = false"
+                  >확인</v-btn
                 >
               </v-form>
             </v-card-text>
@@ -67,24 +72,40 @@
         </v-row>
       </v-card>
     </v-dialog>
+    <v-col cols="12">
+      <v-alert type="success" v-if="alert" dismissible
+        >정상적으로 저장되었습니다.</v-alert
+      >
+    </v-col>
   </v-row>
 </template>
 
 <script>
 export default {
+  props: {
+    currentProduct: Array
+  },
   data() {
     return {
       createDialog: false,
-      formDialog: false,
-      productNumber: "",
-      ImageFileName: "",
-      productPattern: [],
-      productType: "",
+      alert: false,
+
+      // product form
+      currentProduct: {
+        number: "",
+        imageFileName: "",
+        pattern: [],
+        type: "",
+        productColor: ""
+      },
+
+      // form Rules
       numberRules: [v => !!v || "번호를 입력하세요"],
       fileNameRules: [
         v => !!v || "이미지 파일 이름을 입력하세요",
         v => /.+..+/.test(v) || "정확한 파일 이름을 입력하세요"
       ],
+      //selects
       types: [
         { text: "1 - 택션지 (0.55mm x 1500cm x 100m)", value: 1 },
         { text: "2 - 합성피혁 (1.4mm x 1380cm x 30m)", value: 2 },
@@ -119,15 +140,21 @@ export default {
   methods: {
     async createProduct() {
       try {
-        await this.$http.post("/api/product", {
-          number: this.productNumber,
-          image: this.ImageFileName,
-          pattern: this.productPattern,
-          type: this.productType
-        });
-        this.createDialog = false;
-        console.log("done");
-      } catch (error) {}
+        await this.$http
+          .post("/api/product", {
+            number: this.number,
+            image: this.imageFileName,
+            pattern: this.pattern,
+            type: this.type
+          })
+          .then(function(res) {
+            if (res.ok) {
+              this.alert = true;
+            }
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
