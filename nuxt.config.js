@@ -46,7 +46,11 @@ export default {
    ** Plugins to load before mounting the App
    ** https://nuxtjs.org/guide/plugins
    */
-  plugins: ["~/plugins/vue-resource", "~/plugins/fontawesome"],
+  plugins: [
+    "~/plugins/vue-resource",
+    "~/plugins/fontawesome",
+    "~/plugins/eventBus"
+  ],
   /*
    ** Auto import components
    ** See https://nuxtjs.org/api/configuration-components

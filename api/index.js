@@ -1,6 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import Product from "../models/Product";
+import User from "../models/User";
+
+const bcrypt = require("bcrypt");
+const salt = bcrypt.genSaltSync(10);
 
 // const Product = require("../models/Product.js");
 const catchErrors = require("../middleware/async-error.js");
@@ -35,6 +39,8 @@ mongoose.connect(
   }
 );
 
+// --------------------- product ------------------------------------------------
+
 // GET Product - /api/product
 router.get(
   "/product",
@@ -47,28 +53,15 @@ router.get(
 );
 
 // POST Create Product - /api/product
-// router.post("/product", (req, res) => {
-//   var New_product = new Product({
-//     number: req.body.number,
-//     image: req.body.image,
-//     type: req.body.type,
-//     pattern: req.body.pattern,
-//     color: ""
-//   });
-
-//   New_product.save(function(err) {
-//     if (err) console.log(err);
-//   });
-// });
-
 router.post(
   "/product",
   catchErrors(async req => {
+    var product = req.body.product;
     var New_product = new Product({
-      number: req.body.number,
-      image: req.body.image,
-      type: req.body.type,
-      pattern: req.body.pattern,
+      number: product.number,
+      image: product.image,
+      type: product.type,
+      pattern: product.pattern,
       color: ""
     });
 
@@ -79,6 +72,7 @@ router.post(
   })
 );
 
+// EDIT PUT - /api/product/:id
 router.put(
   "/product/:id",
   catchErrors(async (req, res) => {
@@ -97,6 +91,76 @@ router.put(
     return res.json({ ok: true });
   })
 );
+
+router.delete(
+  "/product/:id",
+  catchErrors(async (req, res) => {
+    const Delete_product = await Product.findById(req.params.id);
+
+    await Delete_product.delete();
+
+    return res.json({ ok: true });
+  })
+);
+
+// ------------------- user ------------------------------------------------------
+
+router.get(
+  "/user",
+  catchErrors(async (req, res, next) => {
+    const users = await User.find({}, function(err, users) {
+      if (err) return res.status(500).send({ error: "database failure" });
+    });
+    res.send(users);
+  })
+);
+
+router.post(
+  "/user",
+  catchErrors(async (req, res) => {
+    var user = req.body.user;
+    var findUser = await User.findOne({ uid: user.uid });
+    const hashedPassword = bcrypt.hashSync(user.password, salt);
+    if (findUser) {
+      res.json({ ok: false });
+    } else {
+      const New_user = new User({
+        name: user.name,
+        uid: user.uid,
+        password: hashedPassword
+      });
+      // New_user.password = New_user.generateHash(user.password);
+      await New_user.save(function(err) {
+        if (err) console.log(err);
+      });
+    }
+  })
+);
+
+router.put(
+  "/user/:id",
+  catchErrors(async (req, res) => {
+    var user = req.body.user;
+    var findUser = await User.findOne({ uid: user.uid });
+    const hashedPassword = bcrypt.hashSync(user.password, salt);
+    var result = bcrypt.compareSync(password, user.password);
+    if (findUser) {
+      res.json({ ok: false });
+    } else {
+      const New_user = new User({
+        name: user.name,
+        uid: user.uid,
+        password: hashedPassword
+      });
+      // New_user.password = New_user.generateHash(user.password);
+      await New_user.save(function(err) {
+        if (err) console.log(err);
+      });
+    }
+  })
+);
+
+// ----------------- login & logout -----------------------------------------------
 
 // Add POST - /api/login
 router.post("/login", (req, res) => {

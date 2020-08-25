@@ -16,7 +16,6 @@
             :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[rules.required]"
             :type="show2 ? 'text' : 'password'"
-            name="input-10-2"
             label="Password"
             placeholder="비밀번호를 입력하세요"
             v-model="password"

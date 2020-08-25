@@ -1,5 +1,9 @@
 <template>
   <div>
+    <productDialog
+      :showDialog="editForm"
+      :editProduct="currentProduct"
+    ></productDialog>
     <v-card>
       <v-card-title>Product Table</v-card-title>
 
@@ -12,20 +16,20 @@
         </template>
       </v-data-table>
     </v-card>
-    <createProduct v-if="editForm"></createProduct>
   </div>
 </template>
 
 <script>
-import createProduct from "../admin/createProduct";
+import productDialog from "../admin/productDialog";
 export default {
   components: {
-    createProduct
+    productDialog
   },
   data() {
     return {
       editForm: false,
       productLists: [],
+      currentProduct: {},
       headers: [
         { text: "Product Number", align: "center", value: "number" },
         {
@@ -50,24 +54,33 @@ export default {
     };
   },
   created() {
-    this.$http.get("/api/product/").then(res => (this.productLists = res.data));
+    this.$http.get("/api/product").then(res => (this.productLists = res.data));
   },
   methods: {
     openEditForm(item) {
       this.editForm = !this.editForm;
       this.currentProduct = item;
     },
-    editProduct(item) {
+    deleteProduct(item) {
+      const index = this.productLists.indexOf(item);
+      this.currentProduct = Object.assign({}, item);
       var id = item._id;
-      this.$http
-        .put(`/api/product/${id}`, {
-          product: item
-        })
-        .then(res => {
-          if (res.ok) {
-            alert("good");
-          }
-        });
+      if (confirm("Are you sure you want to delete this item?") == true) {
+        this.productLists.splice(index, 1);
+        this.$http
+          .delete(`/api/product/${id}`, {
+            product: this.currentProduct
+          })
+          .then(response => {
+            this.alert = true;
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+        alert("정상적으로 삭제되었습니다.");
+      } else {
+        return alert("삭제가 취소되었습니다.");
+      }
     }
   }
 };
