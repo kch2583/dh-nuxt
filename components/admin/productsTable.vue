@@ -1,9 +1,6 @@
 <template>
   <div>
-    <productDialog
-      :showDialog="editForm"
-      :editProduct="currentProduct"
-    ></productDialog>
+    <productDialog :showDialog="editForm" :editProduct="currentProduct"></productDialog>
     <v-card>
       <v-card-title>Product Table</v-card-title>
 
@@ -48,7 +45,7 @@ export default {
           text: "Pattern",
           value: "pattern"
         },
-        { text: "Edit", value: "edit", sortable: false },
+
         { text: "Delete", value: "delete", sortable: false }
       ]
     };

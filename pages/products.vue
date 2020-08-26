@@ -47,7 +47,8 @@
               <v-chip v-if="type.typeNumber === productList.type">{{ type.type }}</v-chip>
             </div>
             <v-chip :color="productList.color">{{ productList.color }}</v-chip>
-            <v-chip>{{ productList.pattern }}</v-chip>
+
+            <v-chip v-for="p in productList.pattern" :key="p">{{ p }}</v-chip>
           </v-chip-group>
         </v-card-text>
       </v-card>
@@ -65,7 +66,6 @@
 </template>
 
 <script>
-import products from "../data/product.json";
 import pType from "../data/productType.json";
 import typeInfo from "../components/admin/typeInfo";
 export default {
@@ -74,14 +74,16 @@ export default {
   },
   data: () => ({
     productType: pType,
-    productLists: products,
+    productLists: [],
     searchNumber: "",
     filteredType: [],
     page: 1,
     length: 10,
     totalVisible: 10
   }),
-
+  created() {
+    this.$http.get("/api/product").then(res => (this.productLists = res.data));
+  },
   computed: {
     //필터기능
     filteredProductLists: function() {

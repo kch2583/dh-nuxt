@@ -1,12 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
-import Product from "../models/Product";
-import User from "../models/User";
+// import Product from "../models/Product";
+// import User from "../models/User";
+var Product = require("../models/Product");
+var User = require("../models/User");
 
 const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
 
-// const Product = require("../models/Product.js");
 const catchErrors = require("../middleware/async-error.js");
 
 // Create express router
@@ -92,6 +93,7 @@ router.put(
   })
 );
 
+// DELETE product - /api/product/:id
 router.delete(
   "/product/:id",
   catchErrors(async (req, res) => {
@@ -105,6 +107,7 @@ router.delete(
 
 // ------------------- user ------------------------------------------------------
 
+// GET user - /api/user
 router.get(
   "/user",
   catchErrors(async (req, res, next) => {
@@ -115,6 +118,7 @@ router.get(
   })
 );
 
+// CREATE user POST - /api/user
 router.post(
   "/user",
   catchErrors(async (req, res) => {
@@ -129,47 +133,65 @@ router.post(
         uid: user.uid,
         password: hashedPassword
       });
-      // New_user.password = New_user.generateHash(user.password);
+
       await New_user.save(function(err) {
         if (err) console.log(err);
       });
+      return res.json({ ok: true });
     }
   })
 );
 
+// EDIT user PUT - /api/user/:id  비밀번호 변경
 router.put(
   "/user/:id",
   catchErrors(async (req, res) => {
     var user = req.body.user;
-    var findUser = await User.findOne({ uid: user.uid });
-    const hashedPassword = bcrypt.hashSync(user.password, salt);
-    var result = bcrypt.compareSync(password, user.password);
-    if (findUser) {
-      res.json({ ok: false });
-    } else {
-      const New_user = new User({
-        name: user.name,
-        uid: user.uid,
-        password: hashedPassword
-      });
-      // New_user.password = New_user.generateHash(user.password);
+    var Edit_user = await User.findById(req.params.id);
+    var passwordMatch = bcrypt.compareSync(Edit_user.password, user.password);
+    if (Edit_user && passwordMatch) {
+      const hashedPassword = bcrypt.hashSync(user.newPassword, salt);
+      Edit_user.password = hashedPassword;
       await New_user.save(function(err) {
         if (err) console.log(err);
+        return res.json({ ok: true });
       });
+    } else {
+      return res.json({ message: "현재 비밀번호가 일치하지 않습니다." });
     }
+  })
+);
+
+router.delete(
+  "/user/:id",
+  catchErrors(async (req, res) => {
+    var Delete_user = await User.findById(req.params.id);
+    await Delete_user.delete();
+    return res.json({ ok: true });
   })
 );
 
 // ----------------- login & logout -----------------------------------------------
 
 // Add POST - /api/login
-router.post("/login", (req, res) => {
-  if (req.body.username === "demo" && req.body.password === "demo") {
-    req.session.authUser = { username: "demo" };
-    return res.json({ username: "demo" });
-  }
-  res.status(401).json({ message: "Bad credentials" });
-});
+router.post(
+  "/login",
+  catchErrors(async (req, res) => {
+    var findUser = await User.findOne({ uid: req.body.username });
+    var passwordMatch = bcrypt.compareSync(
+      req.body.password,
+      findUser.password
+    );
+
+    if (findUser && passwordMatch) {
+      req.session.authUser = { username: findUser.name };
+      // return res.json({ username: findUser.name });
+
+      return res.json(findUser);
+    }
+    res.status(401).json({ message: "아이디나 비밀번호가 틀렸습니다." });
+  })
+);
 
 // Add POST - /api/logout
 router.post("/logout", (req, res) => {

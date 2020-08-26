@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-var productSchema = new mongoose.Schema({
+var ProductSchema = new mongoose.Schema({
   number: Number,
   type: Number,
   pattern: Array,
@@ -7,5 +7,5 @@ var productSchema = new mongoose.Schema({
   image: String
 });
 
-mongoose.model("Products", productSchema);
+mongoose.model("Products", ProductSchema);
 module.exports = mongoose.model("Products");
