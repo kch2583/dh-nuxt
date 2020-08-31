@@ -33,14 +33,15 @@
     <!-- 제품 표시 -->
     <v-col
       v-for="productList in filteredProductLists "
-      :key="productList.id"
+      :key="productList.number"
       cols="6"
       sm="4"
       md="2"
     >
       <v-card rounded elevation="6">
         <v-card-title class="text-h6">{{productList.number}}</v-card-title>
-        <v-img :src="require('../static/' + productList.image)"></v-img>
+
+        <v-img v-if="productList.image" :src="require('../../static/' + productList.image)"></v-img>
         <v-card-text>
           <v-chip-group multiple column draggable>
             <div v-for="type in productType" :key="type.typeNumber">
@@ -66,15 +67,16 @@
 </template>
 
 <script>
-import pType from "../data/productType.json";
-import typeInfo from "../components/admin/typeInfo";
+import pType from "../../data/productType.json";
+import typeInfo from "../../components/admin/typeInfo";
 export default {
   components: {
     typeInfo
   },
   data: () => ({
+    p: {},
     productType: pType,
-    productLists: [],
+    productLists: {},
     searchNumber: "",
     filteredType: [],
     page: 1,
@@ -94,14 +96,13 @@ export default {
         });
       }
       // type, 검색 아무것도 해당 안될 때 (전체보기)
-      else if (!this.filteredType.length) {
+      else if (this.filteredType.length === 0) {
         return this.productLists;
       }
       // type별로 제품 검색하기
       else {
         var filteredProduct = [];
         var filtered = this.filteredType;
-
         this.productLists.forEach(function(product) {
           function cardContainsFilter(filter) {
             return product.type === filter;
@@ -114,7 +115,6 @@ export default {
       }
     }
   },
-
   methods: {
     //필터된 타입 저장
     filter(type) {

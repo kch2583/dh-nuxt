@@ -19,7 +19,7 @@
 import userDialog from "../../components/admin/userDialog";
 import usersTable from "../../components/admin/usersTable";
 export default {
-  middleware: "auth",
+  // middleware: "auth",
   components: { usersTable, userDialog },
   data() {
     return {

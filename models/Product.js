@@ -1,5 +1,7 @@
 var mongoose = require("mongoose");
-var ProductSchema = new mongoose.Schema({
+var Schema = mongoose.Schema;
+
+var ProductSchema = new Schema({
   number: Number,
   type: Number,
   pattern: Array,
@@ -7,5 +9,5 @@ var ProductSchema = new mongoose.Schema({
   image: String
 });
 
-mongoose.model("Products", ProductSchema);
-module.exports = mongoose.model("Products");
+// var Kitten = connection.model("dhProduct", ProductSchema);
+module.exports = mongoose.model("dhProduct", ProductSchema);

@@ -37,6 +37,7 @@
                     v-model="user.password"
                     @click:append="show2 = !show2"
                     outlined
+                    required
                   ></v-text-field>
                 </div>
 
@@ -50,6 +51,7 @@
                     v-model="user.CurrentPassword"
                     @click:append="show2 = !show2"
                     outlined
+                    required
                   ></v-text-field>
 
                   <v-text-field
@@ -61,6 +63,7 @@
                     @click:append="show2 = !show2"
                     :rules="passwordRules"
                     outlined
+                    required
                   ></v-text-field>
                 </div>
 
@@ -75,6 +78,7 @@
                   @click:append="show2 = !show2"
                   :rules="matchRules"
                   outlined
+                  required
                 ></v-text-field>
                 <!-- 확인 버튼 submit -->
                 <v-btn
@@ -149,13 +153,13 @@ export default {
       return rules;
     },
     passwordRules() {
-      const rules = [];
+      const passwordRules = [];
       if (this.minLength) {
         const rule = v =>
           (v || "").length >= this.minLength ||
           ` 최소 ${this.minLength}글자 이상이 필요합니다.`;
 
-        rules.push(rule);
+        passwordRules.push(rule);
       }
       const pattern = /^(?=.*[a-z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/;
       if (pattern) {
@@ -163,13 +167,15 @@ export default {
           pattern.test(v) ||
           "문자, 숫자, 특수문자를 적어도 1개씩 사용하여야 합니다.";
 
-        rules.push(rule);
+        passwordRules.push(rule);
       }
-      return rules;
+      return passwordRules;
     }
   },
   methods: {
     async createUser(user) {
+      if (condition) {
+      }
       try {
         // EDIT user PUT /api/user/${id}
         if (user._id) {

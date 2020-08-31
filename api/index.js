@@ -1,8 +1,9 @@
 import express from "express";
 import mongoose from "mongoose";
-// import Product from "../models/Product";
-// import User from "../models/User";
-var Product = require("../models/Product");
+
+// import bodyParser from "body-parser";
+
+var dhProduct = require("../models/Product");
 var User = require("../models/User");
 
 const bcrypt = require("bcrypt");
@@ -10,12 +11,15 @@ const salt = bcrypt.genSaltSync(10);
 
 const catchErrors = require("../middleware/async-error.js");
 
-// Create express router
+// // Create express router
 const router = express.Router();
 
-// Transform req & res to have the same API as express
-// So we can use res.status() & res.json()
-const app = express();
+// // Transform req & res to have the same API as express
+// // So we can use res.status() & res.json()
+var app = express();
+app.use(express.json());
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 router.use((req, res, next) => {
   Object.setPrototypeOf(req, app.request);
   Object.setPrototypeOf(res, app.response);
@@ -40,15 +44,47 @@ mongoose.connect(
   }
 );
 
-// --------------------- product ------------------------------------------------
+// --------------------- home Products ------------------------------------------
+
+// GET Products - /api/products
+// router.get(
+//   "/products",
+//   catchErrors(async (req, res, next) => {
+//     var products = await dhProduct.find({}, function(err, products) {
+//       if (err) return res.status(500).send({ error: "database failure" });
+//     });
+//     console.log(products);
+
+//     res.send(products);
+//   })
+// );
+
+router.get(
+  "/products/:id",
+  catchErrors(async (req, res, next) => {
+    console.log(req.params.id);
+    var products = await dhProduct.findById({ _id: req.params.id }, function(
+      err,
+      products
+    ) {
+      if (err) return res.status(500).send({ error: "database failure" });
+    });
+    console.log(products);
+
+    return res.send(products);
+  })
+);
+
+// ---------------------Admin Product ------------------------------------------------
 
 // GET Product - /api/product
 router.get(
   "/product",
   catchErrors(async (req, res, next) => {
-    const products = await Product.find({}, function(err, products) {
+    var products = await dhProduct.find({}, function(err, products) {
       if (err) return res.status(500).send({ error: "database failure" });
     });
+
     res.send(products);
   })
 );
@@ -58,7 +94,7 @@ router.post(
   "/product",
   catchErrors(async req => {
     var product = req.body.product;
-    var New_product = new Product({
+    var New_product = new dhProduct({
       number: product.number,
       image: product.image,
       type: product.type,
@@ -77,7 +113,7 @@ router.post(
 router.put(
   "/product/:id",
   catchErrors(async (req, res) => {
-    const Edit_product = await Product.findById(req.params.id);
+    var Edit_product = await dhProduct.findById(req.params.id);
     var product = req.body.product;
 
     Edit_product.number = product.number;
@@ -97,7 +133,7 @@ router.put(
 router.delete(
   "/product/:id",
   catchErrors(async (req, res) => {
-    const Delete_product = await Product.findById(req.params.id);
+    var Delete_product = await dhProduct.findById(req.params.id);
 
     await Delete_product.delete();
 
@@ -105,13 +141,13 @@ router.delete(
   })
 );
 
-// ------------------- user ------------------------------------------------------
+// -------------------Admin User ------------------------------------------------------
 
 // GET user - /api/user
 router.get(
   "/user",
   catchErrors(async (req, res, next) => {
-    const users = await User.find({}, function(err, users) {
+    var users = await User.find({}, function(err, users) {
       if (err) return res.status(500).send({ error: "database failure" });
     });
     res.send(users);
@@ -124,7 +160,7 @@ router.post(
   catchErrors(async (req, res) => {
     var user = req.body.user;
     var findUser = await User.findOne({ uid: user.uid });
-    const hashedPassword = bcrypt.hashSync(user.password, salt);
+    var hashedPassword = bcrypt.hashSync(user.password, salt);
     if (findUser) {
       res.json({ ok: false });
     } else {
@@ -171,7 +207,7 @@ router.delete(
   })
 );
 
-// ----------------- login & logout -----------------------------------------------
+// -----------------Admin login & logout -----------------------------------------------
 
 // Add POST - /api/login
 router.post(

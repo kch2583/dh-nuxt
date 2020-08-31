@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="12" v-if="alert">
+    <!-- <v-col cols="12" v-if="alert">
       <v-alert type="success" :value="alert">정상적으로 저장되었습니다.</v-alert>
-    </v-col>
-
+    </v-col>-->
+    <alert></alert>
     <v-dialog v-model="dialog" max-width="500">
       <v-card>
         <v-row>
@@ -61,7 +61,11 @@
 </template>
 
 <script>
+import alert from "../alert";
 export default {
+  components: {
+    alert
+  },
   props: {
     showDialog: Boolean,
     editProduct: Object
@@ -69,7 +73,7 @@ export default {
   data() {
     return {
       dialog: false,
-      alert: false,
+
       // product form
       product: {
         number: "",
@@ -139,6 +143,8 @@ export default {
             .then(function(res) {
               if (res.ok) {
                 this.alert = true;
+                this.alertType = "success";
+                this.alertMessage = "정상적으로 저장되었습니다.";
                 this.dialog = !this.dialog;
               }
             });
@@ -149,8 +155,12 @@ export default {
               product: product
             })
             .then(function(res) {
+              console.log(res.ok);
+
               if (res.ok) {
                 this.alert = true;
+                this.alertType = "success";
+                this.alertMessage = "정상적으로 저장되었습니다.";
                 this.dialog = !this.dialog;
               }
             });

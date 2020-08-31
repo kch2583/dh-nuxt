@@ -17,7 +17,7 @@ import productsTable from "../../components/admin/productsTable";
 import typeInfo from "../../components/admin/typeInfo";
 import createProduct from "../../components/admin/createProduct";
 export default {
-  middleware: "auth",
+  // middleware: "auth",
   components: {
     productsTable,
     typeInfo,

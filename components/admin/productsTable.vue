@@ -62,7 +62,7 @@ export default {
       const index = this.productLists.indexOf(item);
       this.currentProduct = Object.assign({}, item);
       var id = item._id;
-      if (confirm("Are you sure you want to delete this item?") == true) {
+      if (confirm("정말로 삭제하시겠습니까?") == true) {
         this.productLists.splice(index, 1);
         this.$http
           .delete(`/api/product/${id}`, {

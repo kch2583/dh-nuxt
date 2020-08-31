@@ -27,7 +27,7 @@ export const actions = {
       commit("SET_USER", data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        throw new Error("Bad credentials");
+        throw new Error("아이디나 비밀번호가 틀렸습니다.");
       }
       throw error;
     }
