@@ -8,10 +8,11 @@
           </v-col>
           <v-col>
             <v-card id="box" flat style="background-color:transparent;">
-              <h1 class="mb-4">주식회사 대현 eot</h1>
-              <h3>주소 경기도 포천시 가산면 너배기길 90</h3>
-              <h3>전화 031-542-2583</h3>
-              <h3>대표 전화 010-9025-8855</h3>
+              <h1 class="mb-4">주식회사 대현</h1>
+              <h3>주소 : 경기도 포천시 가산면 너배기길 90</h3>
+              <h3>전화 : 031-542-2583</h3>
+              <h3>대표 전화 : 010-9025-8855</h3>
+              <h3>이메일 : sya8855@naver.com</h3>
             </v-card>
 
             <v-col id="kakao">

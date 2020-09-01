@@ -38,21 +38,23 @@
       sm="4"
       md="2"
     >
-      <v-card rounded elevation="6">
-        <v-card-title class="text-h6">{{productList.number}}</v-card-title>
+      <nuxt-link :to="`/products/${productList._id}`">
+        <v-card rounded elevation="6">
+          <v-card-title class="text-h6">{{productList.number}}</v-card-title>
 
-        <v-img v-if="productList.image" :src="require('../../static/' + productList.image)"></v-img>
-        <v-card-text>
-          <v-chip-group multiple column draggable>
-            <div v-for="type in productType" :key="type.typeNumber">
-              <v-chip v-if="type.typeNumber === productList.type">{{ type.type }}</v-chip>
-            </div>
-            <v-chip :color="productList.color">{{ productList.color }}</v-chip>
+          <v-img v-if="productList.image" :src="require('../../static/' + productList.image)"></v-img>
+          <v-card-text>
+            <v-chip-group multiple column draggable>
+              <div v-for="type in productType" :key="type.typeNumber">
+                <v-chip v-if="type.typeNumber === productList.type">{{ type.type }}</v-chip>
+              </div>
+              <v-chip :color="productList.color">{{ productList.color }}</v-chip>
 
-            <v-chip v-for="p in productList.pattern" :key="p">{{ p }}</v-chip>
-          </v-chip-group>
-        </v-card-text>
-      </v-card>
+              <v-chip v-for="p in productList.pattern" :key="p">{{ p }}</v-chip>
+            </v-chip-group>
+          </v-card-text>
+        </v-card>
+      </nuxt-link>
     </v-col>
     <v-col cols="12">
       <v-pagination
